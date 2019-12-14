@@ -1,0 +1,15 @@
+---
+- name: Copy docker-compose file
+  copy:
+    src: "../docker-compose.yml"
+    dest: /home/ubuntu/app/docker-compose.yml
+
+- name: Update application image
+  command:
+    chdir: app
+    cmd: docker-compose pull
+
+- name: Start application
+  command:
+    chdir: app
+    cmd: docker-compose up -d
