@@ -29,6 +29,18 @@ jobs:
           name: Push Docker image to Docker Hub
           command: docker push winlost/sayfizzbuzz
 
+  deploy:
+    docker:
+      - image: circleci/python:3.7.5
+    steps:
+      - checkout
+      - run:
+          name: Install deployment script dependencies
+          command: cd ansible && pipenv install
+      - run:
+          name: Deploy to production
+          command: cd ansible && pipenv run ansible-playbook deploy-production.yml
+
 workflows:
   version: 2
   say-fizz-pipeline:
@@ -37,3 +49,6 @@ workflows:
       - build:
           requires:
             - unit_tests
+      - deploy:
+          requires:
+            - build
