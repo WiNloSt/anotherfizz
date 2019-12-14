@@ -12,8 +12,28 @@ jobs:
           name: Run unittest
           command: python app/fizzbuzztest.py
 
+  build:
+    docker:
+      - image: circleci/python:3.7.5
+    steps:
+      - attach_workspace:
+          at: .
+      - setup_remote_docker
+      - run:
+          name: Build Docker image
+          command: bash scripts/build.sh
+      - run:
+          name: Login to Docker Hub
+          command: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - run:
+          name: Push Docker image to Docker Hub
+          command: docker push winlost/sayfizzbuzz
+
 workflows:
   version: 2
   say-fizz-pipeline:
     jobs:
       - unit_tests
+      - build:
+          requires:
+            - unit_tests
