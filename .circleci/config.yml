@@ -1,16 +1,19 @@
 version: 2
 jobs:
-  build:
+  unit_tests:
     docker:
       - image: circleci/python:3.7.5
-
     steps:
       - checkout
-
+      - persist_to_workspace:
+          root: .
+          paths: .
       - run:
-          name: Greeting
-          command: echo Hello, world.
+          name: Run unittest
+          command: python app/fizzbuzztest.py
 
-      - run:
-          name: Print the Current Time
-          command: date
+workflows:
+  version: 2
+  say-fizz-pipeline:
+    jobs:
+      - unit_tests
